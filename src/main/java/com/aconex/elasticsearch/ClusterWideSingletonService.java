@@ -3,16 +3,18 @@ package com.aconex.elasticsearch;
 import org.elasticsearch.cluster.ClusterChangedEvent;
 import org.elasticsearch.cluster.ClusterStateListener;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.common.settings.Settings;
 
 public abstract class
         ClusterWideSingletonService extends AbstractLifecycleComponent<ClusterWideSingletonService> implements ClusterStateListener {
 
+    private final ESLogger log = ESLoggerFactory.getLogger(ClusterWideSingletonService.class.getName());
 
     public boolean isLocalNodeMaster() {
         return localNodeMaster;
     }
-
 
     @Override
     public final void clusterChanged(ClusterChangedEvent event) {
@@ -23,8 +25,10 @@ public abstract class
             localNodeMaster = newLocalNodeMasterState;
 
             if (newLocalNodeMasterState) {
+                log.info("Local node become master");
                 serviceIsNowOnMasterNode();
             } else {
+                log.info("Local node is now no longer master");
                 serviceIsNoLongerOnMasterNode();
             }
         }
@@ -62,10 +66,6 @@ public abstract class
         super(settings, prefixSettings, loggerClass, componentClass);
     }
 
-
     private volatile boolean localNodeMaster = false;
-
-
-
 
 }
