@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 @Test
 public class IndexOptimizerTest {
 
+    private static final String INDEX_NAME = "paul";
     @Mock
     private IndicesAdminClient indicesAdminClient;
 
@@ -43,21 +44,21 @@ public class IndexOptimizerTest {
     }
 
     public void shouldWaitForMerge() {
-        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, "paul");
+        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, INDEX_NAME);
         indexOptimizer.optimize();
 
         verify(optimizeRequestBuilder).setWaitForMerge(true);
     }
 
     public void shouldExecuteOptimizeAndWaitForResponse() throws Exception {
-        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, "paul");
+        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, INDEX_NAME);
         indexOptimizer.optimize();
 
         verify(optimizeResponses).get();
     }
 
     public void shouldDefaultToOptimizeDownToOneSegmentMax() {
-        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, "paul");
+        IndexOptimizer indexOptimizer = new IndexOptimizer(indicesAdminClient, INDEX_NAME);
         indexOptimizer.optimize();
 
         verify(optimizeRequestBuilder).setMaxNumSegments(1);
